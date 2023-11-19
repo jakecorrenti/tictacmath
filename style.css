@@ -17,11 +17,13 @@
     margin-top: 10%;
 }
 
-p {
+.description {
+    display: block;
+    margin: 0 auto;
+    width: 500px;
     color: gray;
     font-size: 30px;
     text-align: center;
-    word-wrap: break-work;
 }
 
 .controls {
