@@ -17,43 +17,11 @@
     margin-top: 10%;
 }
 
-.display {
-    color: white;
-    font-size: 25px;
+p {
+    color: gray;
+    font-size: 30px;
     text-align: center;
-    margin-top: 1em;
-    margin-bottom: 1em;
-}
-
-.hide {
-    display: none;
-}
-
-.container { 
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 33% 33% 33%;
-    grid-template-rows: 33% 33% 33%;
-    max-width: 300px;
-}
-
-.tile {
-    border: 1px solid white;
-    mid-width: 100px;
-    min-height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 50px;
-    cursor: pointer;
-}
-
-.playerX {
-    color: #09C372;
-}
-
-.playerO {
-    color: #498AFB;
+    word-wrap: break-work;
 }
 
 .controls {
@@ -64,13 +32,14 @@
     margin-top: 1em;
 }
 
-#reset {
+#start {
     background-color: #FF3860;
     color: white;
     padding: 8px;
+    margin-top: 5em;
     border-radius: 8px;
     border: none;
-    font-size: 20px;
+    font-size: 30px;
     margin-left: 1em;
     cursor: pointer;
 }
