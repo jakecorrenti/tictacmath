@@ -30,6 +30,7 @@ class Game {
     }
 
     checkProblemAnswer(multiplicand, multiplier, answer) {
+        if (answer === '') answer = -1;
         return (multiplicand * multiplier) == answer;
     }
 
