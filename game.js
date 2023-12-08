@@ -4,6 +4,7 @@ class Game {
         this.player2ID = 'O';
         this.currentPlayer = this.player1ID;
         this.board = new Board();
+        this.askedQuestions = [];
     }
 
     startGame() {
@@ -14,6 +15,7 @@ class Game {
         this.player1ID = '';
         this.player2ID = '';
         this.board.clearBoard();
+        this.askedQuestions = []; 
     }
 
     rematch() {
@@ -35,8 +37,19 @@ class Game {
     }
 
     generateMathProblem() {
-        let multiplicand = Math.floor(Math.random() * 11);
-        let multiplier = Math.floor(Math.random() * 11);
+
+        if (this.askedQuestions.length >= 99) { 
+            this.askedQuestions = []
+        }
+
+        let multiplicand, multiplier, question;
+        do {
+            multiplicand = Math.floor(Math.random() * 11);
+            multiplier = Math.floor(Math.random() * 11);
+            question = `${multiplicand} x ${multiplier}`;
+        } while (this.askedQuestions.includes(question));
+
+        this.askedQuestions.push(question);
         return [multiplicand, multiplier];
     }
 }
@@ -106,7 +119,7 @@ class Board {
             [2, 5, 8],
             [0, 4, 8],
             [2, 4, 6],
-          ];
+        ];
 
         for (let i = 0; i <= 7; i++) {
             const a = this.squares[winningConditions[i][0]].symbol;
