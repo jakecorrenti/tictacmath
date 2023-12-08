@@ -2,16 +2,42 @@ class Game {
     constructor() {
         this.player1ID = 'X';
         this.player2ID = 'O';
+        this.currentPlayer = this.player1ID;
         this.board = new Board();
     }
 
-    startGame() {}
-    endGame() {}
-    rematch() {}
-    playerTurn() {}
-    makeMove() {}
-    checkProblemAnswer() {}
-    generateMathProblem() {}
+    startGame() {
+        this.player1ID = 'X';
+        this.player2ID = 'O';
+    }
+    endGame() {
+        this.player1ID = '';
+        this.player2ID = '';
+        this.board.clearBoard();
+    }
+
+    rematch() {
+        this.endGame();
+        this.startGame();
+    }
+
+    playerTurn() {
+        return this.currentPlayera
+    }
+
+    makeMove(index, currentPlayer) {
+        this.board.setSquareSymbol(index, currentPlayer);
+    }
+
+    checkProblemAnswer(multiplicand, multiplier, answer) {
+        return (multiplicand * multiplier) == answer;
+    }
+
+    generateMathProblem() {
+        let multiplicand = Math.floor(Math.random() * 11);
+        let multiplier = Math.floor(Math.random() * 11);
+        return [multiplicand, multiplier];
+    }
 }
 
 class Square {
@@ -47,7 +73,7 @@ class Board {
     
     boardIsEmpty() {
         for (let i = 0; i < 9; i++) {
-            if (this.squares[i].symbol !== "") {
+            if (!this.squareIsEmpty(i)) {
                 return false;
             }
         }
@@ -56,7 +82,7 @@ class Board {
 
     boardIsFull()  {
         for (let i = 0; i < 9; i++) {
-            if (this.squares[i].symbol === "") {
+            if (this.squareIsEmpty(i)) {
                 return false;
             }
         }
@@ -113,78 +139,74 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let player1 = game.player1ID;
     let player2 = game.player2ID;
-    let currentPlayer = player1;
 
     let isGameActive = true;
 
-    const PLAYERX_WON = 'PLAYERX_WON';
-    const PLAYERO_WON = 'PLAYERO_WON';
-    const TIE = 'TIE';
-
     function handleResultValidation() {
+        if (game.board.boardIsEmpty()) return;
         let roundWon = game.board.hasWinner();
 
         if (roundWon) {
-            announce(currentPlayer === player1 ? PLAYERX_WON : PLAYERO_WON);
+            announce(game.currentPlayer === player1 ? player1 : player2);
             isGameActive = false;
             return;
         }
 
-        if (game.board.boardIsFull()) announce(TIE);
+        if (game.board.boardIsFull()) announce('TIE');
     }
 
     const announce = (type) => {
         switch (type) {
-            case PLAYERO_WON:
+            case player2:
                 announcer.innerHTML = 'Player <span class="playerO">O</span> Won';
                 break;
-            case PLAYERX_WON:
+            case player2:
                 announcer.innerHTML = 'Player <span class="playerX">X</span> Won';
                 break;
-            case TIE:
+            case 'TIE':
                 announcer.innerText = 'Tie'
         }
         announcer.classList.remove('hide');
     };
 
     const isValidAction = (tile) => {
-        if (tile.innerText === 'X' || tile.innerText === 'O') {
+        if (tile.innerText === player1 || tile.innerText === player2) {
             return false;
         }
 
         return true;
     };
 
-    const updateBoard = (index) => {
-        game.board.setSquareSymbol(index, currentPlayer);
-    }
-
     const changePlayer = () => {
-        playerDisplay.classList.remove(`player${currentPlayer}`);
-        currentPlayer = currentPlayer === player1 ? player2 : player1;
-        playerDisplay.innerText = currentPlayer;
-        playerDisplay.classList.add(`player${currentPlayer}`);
+        playerDisplay.classList.remove(`player${game.currentPlayer}`);
+        game.currentPlayer = game.currentPlayer === player1 ? player2 : player1;
+        playerDisplay.innerText = game.currentPlayer;
+        playerDisplay.classList.add(`player${game.currentPlayer}`);
     }
 
     const userAction = (tile, index) => {
         if (isValidAction(tile) && isGameActive) {
-            let answer = prompt("Please enter the following problem correctly to draw your symbol:\n3 x 1")
-            console.log(answer)
+            let isCorrect = false;
+            while (!isCorrect) {
+                let [multiplicand, multiplier] = game.generateMathProblem();
+                let answer = prompt("Please answer the following problem correctly to draw your symbol:\n"+multiplicand+" x "+multiplier);
+                isCorrect = game.checkProblemAnswer(multiplicand, multiplier, answer);
+            }
 
-            tile.innerText = currentPlayer;
-            tile.classList.add(`player${currentPlayer}`);
-            updateBoard(index);
+            tile.innerText = game.currentPlayer;
+            tile.classList.add(`player${game.currentPlayer}`);
+            game.makeMove(index, game.currentPlayer);
             handleResultValidation();
             changePlayer();
         }
     }
 
     const resetBoard = () => {
-        game.board.clearBoard();
+        game.rematch();
         isGameActive = true;
         announcer.classList.add('hide');
 
-        if (currentPlayer === player2) {
+        if (game.currentPlayer === player2) {
             changePlayer();
         }
 
