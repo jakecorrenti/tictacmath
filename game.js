@@ -197,7 +197,7 @@ window.addEventListener('DOMContentLoaded', () => {
             let isCorrect = false;
             while (!isCorrect) {
                 let [multiplicand, multiplier] = game.generateMathProblem();
-                let answer = prompt("Please answer the following problem correctly to draw your symbol:\n"+multiplicand+" x "+multiplier);
+                let answer = prompt("Please answer the following problem correctly to draw your symbol:\n"+multiplicand+" x "+multiplier).trim();
                 isCorrect = game.checkProblemAnswer(multiplicand, multiplier, answer);
                 game.currentPlayer === player1 ? player1Questions++ : player2Questions++;
             }
