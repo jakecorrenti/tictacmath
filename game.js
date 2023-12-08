@@ -1,6 +1,9 @@
 class Game {
-    // will have a player1 and player2 id and then the board instance
-    constructor() {}
+    constructor() {
+        this.player1ID = 'X';
+        this.player2ID = 'O';
+        this.board = new Board();
+    }
 
     startGame() {}
     endGame() {}
@@ -11,25 +14,92 @@ class Game {
     generateMathProblem() {}
 }
 
-class Board {
-    // has a list of squares
-    constructor() {}
+class Square {
+    constructor(symbol) {
+        this.symbol = '';
+    } 
 
-    squareIsEmpty() {}
-    boardIsEmpty() {}
-    setSquareSymbol() {}
-    clearBoard() {}
-    hasWinner() {}
-    boardIsFull() {}
+    setSymbol(playerSymbol) {
+        this.symbol = playerSymbol;
+    }
 }
 
-class Square {
-    // going to have the id of the player, which allows us to figure out what
-    // the symbol is or who wins
-    constructor() {}
+class Board {
+    constructor(){
+        this.squares = [];
+        for (let i = 0; i < 9 ; i++ ){
+            this.squares.push(new Square(''));
+        }
+    }
 
-    setID() {}
-    getID() {}
+    squareIsEmpty(index) {
+        return this.squares[index].symbol === '';
+    }
+
+    setSquareSymbol(index, currentPlayer){
+        if (index >= 0 && index < 9) {
+            this.squares[index].setSymbol(currentPlayer);
+        }
+        else {
+            throw new Error('Index outside of range');
+        }
+    }
+    
+    boardIsEmpty() {
+        for (let i = 0; i < 9; i++) {
+            if (this.squares[i].symbol !== "") {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    boardIsFull()  {
+        for (let i = 0; i < 9; i++) {
+            if (this.squares[i].symbol === "") {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    hasWinner(){
+        /*
+           Indexes within the board
+           [0] [1] [2]
+           [3] [4] [5]
+           [6] [7] [8]
+        */
+        let winningConditions = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+          ];
+
+        for (let i = 0; i <= 7; i++) {
+            const a = this.squares[winningConditions[i][0]].symbol;
+            const b = this.squares[winningConditions[i][1]].symbol;
+            const c = this.squares[winningConditions[i][2]].symbol;
+            if (a === "" || b === "" || c === "") {
+              continue;
+            }
+            if (a === b && b === c) {
+              return true;
+            }
+        }
+        return false;
+    }
+
+    clearBoard(){
+        for (let i = 0; i < 9; i++){
+            this.setSquareSymbol(i, '');
+        }
+    }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -39,55 +109,28 @@ window.addEventListener('DOMContentLoaded', () => {
     const announcer = document.querySelector('.announcer');
     const inputBar = document.querySelector('.problemInput');
 
-    let board = ['', '', '', '', '', '', '', '', ''];
-    let currentPlayer = 'X';
+    let game = new Game();
+
+    let player1 = game.player1ID;
+    let player2 = game.player2ID;
+    let currentPlayer = player1;
+
     let isGameActive = true;
 
     const PLAYERX_WON = 'PLAYERX_WON';
     const PLAYERO_WON = 'PLAYERO_WON';
     const TIE = 'TIE';
 
-    /*
-       Indexes within the board
-       [0] [1] [2]
-       [3] [4] [5]
-       [6] [7] [8]
-    */
-
-    const winningConditions = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-
     function handleResultValidation() {
-        let roundWon = false;
-        for (let i = 0; i <= 7; i++) {
-            const winCondition = winningConditions[i];
-            const a = board[winCondition[0]];
-            const b = board[winCondition[1]];
-            const c = board[winCondition[2]];
-            if (a === "" || b === "" || c === "") {
-                continue;
-            }
-            if (a === b && b === c) {
-                roundWon = true;
-                break;
-            }
-        }
+        let roundWon = game.board.hasWinner();
 
         if (roundWon) {
-            announce(currentPlayer === "X" ? PLAYERX_WON : PLAYERO_WON);
+            announce(currentPlayer === player1 ? PLAYERX_WON : PLAYERO_WON);
             isGameActive = false;
             return;
         }
 
-        if (!board.includes("")) announce(TIE);
+        if (game.board.boardIsFull()) announce(TIE);
     }
 
     const announce = (type) => {
@@ -113,12 +156,12 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateBoard = (index) => {
-        board[index] = currentPlayer;
+        game.board.setSquareSymbol(index, currentPlayer);
     }
 
     const changePlayer = () => {
         playerDisplay.classList.remove(`player${currentPlayer}`);
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        currentPlayer = currentPlayer === player1 ? player2 : player1;
         playerDisplay.innerText = currentPlayer;
         playerDisplay.classList.add(`player${currentPlayer}`);
     }
@@ -137,11 +180,11 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const resetBoard = () => {
-        board = ['', '', '', '', '', '', '', '', ''];
+        game.board.clearBoard();
         isGameActive = true;
         announcer.classList.add('hide');
 
-        if (currentPlayer === 'O') {
+        if (currentPlayer === player2) {
             changePlayer();
         }
 
