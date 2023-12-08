@@ -1,3 +1,37 @@
+class Game {
+    // will have a player1 and player2 id and then the board instance
+    constructor() {}
+
+    startGame() {}
+    endGame() {}
+    rematch() {}
+    playerTurn() {}
+    makeMove() {}
+    checkProblemAnswer() {}
+    generateMathProblem() {}
+}
+
+class Board {
+    // has a list of squares
+    constructor() {}
+
+    squareIsEmpty() {}
+    boardIsEmpty() {}
+    setSquareSymbol() {}
+    clearBoard() {}
+    hasWinner() {}
+    boardIsFull() {}
+}
+
+class Square {
+    // going to have the id of the player, which allows us to figure out what
+    // the symbol is or who wins
+    constructor() {}
+
+    setID() {}
+    getID() {}
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     const tiles = Array.from(document.querySelectorAll('.tile'));
     const playerDisplay = document.querySelector('.display-player');
