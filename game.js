@@ -134,6 +134,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const resetButton = document.querySelector('#reset');
     const announcer = document.querySelector('.announcer');
     const inputBar = document.querySelector('.problemInput');
+    const player1AccuracyLabel = document.querySelector('.player1Stats');
+    const player2AccuracyLabel = document.querySelector('.player2Stats');
+    
+    let player1Questions = 0; 
+    let player1CorrectAnswers = 0;
+
+    let player2Questions = 0;
+    let player2CorrectAnswers = 0;
 
     let game = new Game();
 
@@ -191,6 +199,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 let [multiplicand, multiplier] = game.generateMathProblem();
                 let answer = prompt("Please answer the following problem correctly to draw your symbol:\n"+multiplicand+" x "+multiplier);
                 isCorrect = game.checkProblemAnswer(multiplicand, multiplier, answer);
+                game.currentPlayer === player1 ? player1Questions++ : player2Questions++;
+            }
+
+            if (game.currentPlayer === player1) {
+                player1CorrectAnswers++;
+                player1AccuracyLabel.innerHTML = 'Player X\'s Accuracy: '+ (Math.floor(player1CorrectAnswers / player1Questions * 100))+'%';
+            } else {
+                player2CorrectAnswers++;
+                player2AccuracyLabel.innerHTML = 'Player O\'s Accuracy: '+ (Math.floor(player2CorrectAnswers / player2Questions * 100))+'%';
             }
 
             tile.innerText = game.currentPlayer;
@@ -205,6 +222,14 @@ window.addEventListener('DOMContentLoaded', () => {
         game.rematch();
         isGameActive = true;
         announcer.classList.add('hide');
+        
+        player1Questions = 0;
+        player1CorrectAnswers = 0;
+        player1AccuracyLabel.innerHTML = 'Player X\'s Accuracy: 100%';
+
+        player2Questions = 0;
+        player2CorrectAnswers = 0;
+        player2AccuracyLabel.innerHTML = 'Player O\'s Accuracy: 100%';
 
         if (game.currentPlayer === player2) {
             changePlayer();
