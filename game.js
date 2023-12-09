@@ -164,12 +164,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let isGameActive = true;
 
+    const PLAYERX_WON = "PLAYERX_WON";
+    const PLAYERO_WON = "PLAYERO_WON";
+    const TIE = "TIE";
+
     function handleResultValidation() {
         if (game.board.boardIsEmpty()) return;
         let roundWon = game.board.hasWinner();
 
         if (roundWon) {
-            announce(game.currentPlayer === player1 ? player1 : player2);
+            announce(game.currentPlayer === player1 ? PLAYERX_WON : PLAYERO_WON);
             isGameActive = false;
             return;
         }
@@ -179,13 +183,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const announce = (type) => {
         switch (type) {
-            case player2:
+            case PLAYERO_WON:
                 announcer.innerHTML = 'Player <span class="playerO">O</span> Won';
                 break;
-            case player2:
+            case PLAYERX_WON:
                 announcer.innerHTML = 'Player <span class="playerX">X</span> Won';
                 break;
-            case 'TIE':
+            case TIE:
                 announcer.innerText = 'Tie'
         }
         announcer.classList.remove('hide');
